@@ -9,7 +9,7 @@ import com.sph.sgnetworkdata.R
 import com.sph.sgnetworkdata.network.model.Record
 import kotlinx.android.synthetic.main.dialoge_network_data_detail.*
 
-class NetworkDataDetailFragment(var recordList: MutableList<Record>?) :
+class NetworkDataDetailFragment(private var recordList: MutableList<Record>?) :
     BottomSheetDialogFragment() {
 
     override fun onCreateView(
@@ -46,9 +46,7 @@ class NetworkDataDetailFragment(var recordList: MutableList<Record>?) :
                 mobileData += record.quarter + " -> " + record.volumeOfMobileData + "\n\n"
             }
             data = record.volumeOfMobileData!!.toDouble()
-
         }
-
         return mobileData
     }
 }

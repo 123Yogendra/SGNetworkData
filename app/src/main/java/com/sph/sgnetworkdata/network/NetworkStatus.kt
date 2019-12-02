@@ -1,5 +1,7 @@
 package com.sph.sgnetworkdata.network
 
+
+// network status for API
 enum class NetworkStatus {
     SUCCESS,
     INTERNET_CONNECTION,

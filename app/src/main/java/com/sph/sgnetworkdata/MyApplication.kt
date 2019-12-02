@@ -23,14 +23,11 @@ class MyApplication : Application(), HasActivityInjector {
     override fun onCreate() {
         super.onCreate()
 
-        //val appComponent = DaggerAppComponent.create()   // equals DaggerAppComponent.builder().build()
-        //appComponent.inject(this)
-
-
-        DaggerAppComponent.builder()
+       // added dagger
+          DaggerAppComponent.builder()
             .networkModule(NetworkModule(this))
             .build()
-            .inject(this);
+            .inject(this)
 
 
     }
