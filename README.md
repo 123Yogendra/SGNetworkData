@@ -4,6 +4,11 @@ Native Android application to display the amount the of data sent over Singapore
 (From given API)
 
 
+### Screens : 
+<img src="https://github.com/123Yogendra/SGNetworkData/blob/master/screens/screen1.png" height="600" width="300">
+<img src="https://github.com/123Yogendra/SGNetworkData/blob/master/screens/screen2.png" height="600" width="300">
+
+
 #### Task ONE: Display a list of data
 Data displayed can be just numbers.
 Each entry in the list could be a card or composite view, or whichever view you think will demonstrate your capabilities.
