@@ -5,7 +5,7 @@ Native Android application to display the amount the of data sent over Singapore
 
 
 ### Screens : 
-<img src="https://github.com/123Yogendra/SGNetworkData/blob/master/screens/screen1.png" height="600" width="300">
+<img src="https://github.com/123Yogendra/SGNetworkData/blob/master/screens/screens1.png" height="600" width="300">
 <img src="https://github.com/123Yogendra/SGNetworkData/blob/master/screens/screen2.png" height="600" width="300">
 
 
@@ -21,3 +21,20 @@ Display a clickable image in the entry if any quarter in a year demonstrates a d
 
 #### Task THREE (Optional): Data Caching
 Cache the data for offline usage.
+
+
+-------------------------------------------------
+
+### Technology :
+##### 1. Kotlin 1.3
+##### 2. JetPack
+##### 3. Retrofit
+##### 4. MVVM
+##### 5. DAGGER2
+
+-------------------------------------------------
+
+### Development Tools : 
+##### 1. Android Studio 3.5 and up
+
+-------------------------------------------------
