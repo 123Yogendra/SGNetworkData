@@ -1,0 +1,98 @@
+package com.sph.sgnetworkdata.userInterface
+
+import android.os.Bundle
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.DividerItemDecoration
+import com.google.android.material.snackbar.Snackbar
+import com.sph.sgnetworkdata.R
+import com.sph.sgnetworkdata.network.NetworkStatus
+import com.sph.sgnetworkdata.network.model.BaseDataStore
+import com.sph.sgnetworkdata.network.model.Record
+import com.sph.sgnetworkdata.utils.Constants
+import dagger.android.AndroidInjection
+import kotlinx.android.synthetic.main.activity_network_data.*
+import javax.inject.Inject
+
+
+class NetworkDataActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var networkDataActivityViewModel: NetworkDataActivityViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_network_data)
+        prepareView()
+        callApiAndUpdateUI()
+    }
+
+    fun prepareView() {
+        recycleViewNetworkData.itemAnimator = DefaultItemAnimator()
+        recycleViewNetworkData.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL
+            )
+        )
+    }
+
+    private fun callApiAndUpdateUI() {
+        networkDataProgressBar.visibility = View.VISIBLE
+        networkDataActivityViewModel.networkLiveData.observe(this,
+            Observer<BaseDataStore> { baseDataStore ->
+                networkDataProgressBar.visibility = View.GONE
+
+                if (baseDataStore != null && baseDataStore.result!!.records != null)
+                this.recycleViewNetworkData.adapter =
+                    NetworkDataAdapter(getYearNetworkData(baseDataStore.result!!.records!!))
+            })
+
+
+        // status of actions
+        networkDataActivityViewModel.statusLiveData.observe(this,
+            Observer<NetworkStatus> { status ->
+                networkDataProgressBar.visibility = View.GONE
+                onNetWorkStateChanged(status)
+            })
+        networkDataActivityViewModel.fetchDataDetail()
+    }
+
+
+    private fun onNetWorkStateChanged(state: NetworkStatus) = when (state) {
+        NetworkStatus.INTERNET_CONNECTION -> showSnackBar(getString(R.string.msg_no_internet_network))
+        NetworkStatus.SERVER_ERROR -> showSnackBar(getString(R.string.msg_server_error))
+        NetworkStatus.FAIL -> showSnackBar(getString(R.string.msg_something_went_wrong))
+        else -> showSnackBar(getString(R.string.msg_unknown))
+    }
+
+    private fun getYearNetworkData(recordList: List<Record>): MutableMap<String, MutableList<Record>> {
+
+        val netWorkMap = mutableMapOf<String, MutableList<Record>>()
+
+        recordList.forEach { record ->
+            val year = record.quarter!!.split("-")[0]
+            if(year.toInt() >=Constants.START_YEAR) {
+                var yearRecordList: MutableList<Record> = mutableListOf()
+                if (netWorkMap.containsKey(year)) {
+                    yearRecordList = netWorkMap.get(year)!!
+                    yearRecordList.add(element = record)
+                } else {
+                    yearRecordList.add(element = record)
+                }
+                netWorkMap.put(year, yearRecordList)
+            }
+        }
+        return netWorkMap
+    }
+
+
+    fun showSnackBar(msg: String) {
+        Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_SHORT)
+            .show()
+    }
+
+}

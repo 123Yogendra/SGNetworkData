@@ -2,17 +2,17 @@ package com.sph.sgnetworkdata
 
 import android.app.Activity
 import android.app.Application
-import com.sph.sgnetworkdata.dependencyInjection.DaggerAppComponent
+import com.sph.sgnetworkdata.di.components.DaggerAppComponent
+import com.sph.sgnetworkdata.di.modules.NetworkModule
+
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import javax.inject.Inject
 
-/*
-HasActivityInjector ==> dagger-android
-*/
 
 class MyApplication : Application(), HasActivityInjector {
+
     @Inject
     lateinit var activityInjector: DispatchingAndroidInjector<Activity>
 
@@ -23,8 +23,15 @@ class MyApplication : Application(), HasActivityInjector {
     override fun onCreate() {
         super.onCreate()
 
-        val appComponent = DaggerAppComponent.create() // equals DaggerAppComponent.builder().build()
+        //val appComponent = DaggerAppComponent.create()   // equals DaggerAppComponent.builder().build()
+        //appComponent.inject(this)
 
-        appComponent.inject(this)
+
+        DaggerAppComponent.builder()
+            .networkModule(NetworkModule(this))
+            .build()
+            .inject(this);
+
+
     }
 }
