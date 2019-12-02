@@ -90,9 +90,6 @@ class NetworkDataActivity : AppCompatActivity() {
 
     private fun getYearNetworkData(recordList: List<Record>): MutableMap<String, MutableList<Record>> {
 
-        if(recordList.isEmpty()){
-            networkDataActivityViewModel.statusLiveData.value = NetworkStatus.NO_RECORDS
-        }
 
             val netWorkMap = mutableMapOf<String, MutableList<Record>>()
 
@@ -109,7 +106,15 @@ class NetworkDataActivity : AppCompatActivity() {
                     netWorkMap.put(year, yearRecordList)
                 }
             }
-            return netWorkMap
+
+
+        if(recordList.isEmpty() || netWorkMap.isEmpty()){
+            networkDataActivityViewModel.statusLiveData.value = NetworkStatus.NO_RECORDS
+        }
+
+
+
+        return netWorkMap
 
     }
 
