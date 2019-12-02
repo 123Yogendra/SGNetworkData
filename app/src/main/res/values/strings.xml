@@ -4,7 +4,7 @@
 
 
 
-
+    <string name="msg_no_records">No records.</string>
     <string name="msg_something_went_wrong">Sorry something went wrong.</string>
     <string name="msg_server_error">Server Error.</string>
     <string name="msg_unknown">Unknown</string>

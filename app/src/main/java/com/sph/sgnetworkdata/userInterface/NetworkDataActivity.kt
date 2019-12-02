@@ -60,8 +60,12 @@ class NetworkDataActivity : AppCompatActivity() {
             Observer<BaseDataStore> { baseDataStore ->
                 networkDataProgressBar.visibility = View.GONE
 
-                if (baseDataStore != null && baseDataStore.result!!.records != null)
+                if (baseDataStore != null && baseDataStore.result!!.records != null) {
                     networkDataAdapter.addItemList(getYearNetworkData(baseDataStore.result!!.records!!))
+                }
+                else{
+                    networkDataActivityViewModel.statusLiveData.value = NetworkStatus.FAIL
+                }
             })
 
 
@@ -79,27 +83,34 @@ class NetworkDataActivity : AppCompatActivity() {
         NetworkStatus.INTERNET_CONNECTION -> showSnackBar(getString(R.string.msg_no_internet_network))
         NetworkStatus.SERVER_ERROR -> showSnackBar(getString(R.string.msg_server_error))
         NetworkStatus.FAIL -> showSnackBar(getString(R.string.msg_something_went_wrong))
+        NetworkStatus.NO_RECORDS -> showSnackBar(getString(R.string.msg_no_records))
+
         else -> showSnackBar(getString(R.string.msg_unknown))
     }
 
     private fun getYearNetworkData(recordList: List<Record>): MutableMap<String, MutableList<Record>> {
 
-        val netWorkMap = mutableMapOf<String, MutableList<Record>>()
-
-        recordList.forEach { record ->
-            val year = record.quarter!!.split("-")[0]
-            if(year.toInt() >=Constants.START_YEAR) {
-                var yearRecordList: MutableList<Record> = mutableListOf()
-                if (netWorkMap.containsKey(year)) {
-                    yearRecordList = netWorkMap.get(year)!!
-                    yearRecordList.add(element = record)
-                } else {
-                    yearRecordList.add(element = record)
-                }
-                netWorkMap.put(year, yearRecordList)
-            }
+        if(recordList.isEmpty()){
+            networkDataActivityViewModel.statusLiveData.value = NetworkStatus.NO_RECORDS
         }
-        return netWorkMap
+
+            val netWorkMap = mutableMapOf<String, MutableList<Record>>()
+
+            recordList.forEach { record ->
+                val year = record.quarter!!.split("-")[0]
+                if (year.toInt() >= Constants.START_YEAR) {
+                    var yearRecordList: MutableList<Record> = mutableListOf()
+                    if (netWorkMap.containsKey(year)) {
+                        yearRecordList = netWorkMap.get(year)!!
+                        yearRecordList.add(element = record)
+                    } else {
+                        yearRecordList.add(element = record)
+                    }
+                    netWorkMap.put(year, yearRecordList)
+                }
+            }
+            return netWorkMap
+
     }
 
 

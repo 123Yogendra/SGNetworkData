@@ -38,8 +38,11 @@ class NetworkDataActivityViewModel @Inject constructor() : ViewModel() {
                 call: Call<BaseDataStore>?,
                 response: Response<BaseDataStore>?
             ) {
-                networkLiveData.value = response?.body()
-
+                if(response!!.body()!=null && response.body()!!.success!!)
+                     networkLiveData.value = response?.body()
+                else{
+                    statusLiveData.value = NetworkStatus.FAIL
+                }
             }
 
             override fun onFailure(call: Call<BaseDataStore>?, t: Throwable?) {
