@@ -7,16 +7,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sph.sgnetworkdata.R
 import com.sph.sgnetworkdata.network.model.Record
 import kotlinx.android.synthetic.main.layout_city_list.view.*
+import javax.inject.Inject
 
 
-class NetworkDataAdapter(val networkDataList: MutableMap<String, MutableList<Record>>) :
+class NetworkDataAdapter @Inject constructor():
     RecyclerView.Adapter<NetworkDataAdapter.NetworkDataViewHolder>() {
 
-    private val keysSet: Array<String>
+    private var keysSet =  arrayOf<String>()
+    private var networkDataList = mutableMapOf<String, MutableList<Record>>()
+
+    var onItemClick: ((recordList: MutableList<Record>?) -> Unit)? = null
 
 
-    init {
+
+    fun addItemList(networkDataList: MutableMap<String, MutableList<Record>>){
         keysSet = networkDataList.keys.toTypedArray()
+        this.networkDataList = networkDataList
+        notifyDataSetChanged()
     }
 
 
@@ -28,7 +35,6 @@ class NetworkDataAdapter(val networkDataList: MutableMap<String, MutableList<Rec
 
 
     override fun onBindViewHolder(holder: NetworkDataViewHolder, position: Int) {
-
         holder.bindView(keysSet[position], networkDataList[keysSet[position]])
     }
 
@@ -43,10 +49,14 @@ class NetworkDataAdapter(val networkDataList: MutableMap<String, MutableList<Rec
             itemView.tvLayoutYear.text = key
             itemView.tvLayoutNetWorkData.text = calculateYearData(recordList).toString()
             itemView.ivDecreaseIndicator.visibility =   if (compareQuarterData(recordList)) View.VISIBLE else View.INVISIBLE
+
+            itemView.ivDecreaseIndicator.setOnClickListener {
+                onItemClick?.invoke(networkDataList[key])
+            }
         }
 
 
-        fun calculateYearData(recordList: MutableList<Record>?): Double {
+        private fun calculateYearData(recordList: MutableList<Record>?): Double {
 
             var totatYearData = 0.0
             recordList!!.forEach { record ->
@@ -56,14 +66,14 @@ class NetworkDataAdapter(val networkDataList: MutableMap<String, MutableList<Rec
         }
 
 
-        fun compareQuarterData(recordList: MutableList<Record>?): Boolean {
+        private fun compareQuarterData(recordList: MutableList<Record>?): Boolean {
 
             var data = 0.0
             var compare = false
 
             recordList!!.forEachIndexed({ index, record ->
 
-                if (index != 0 && data < record.volumeOfMobileData!!.toDouble()) {
+                if (index != 0 && data > record.volumeOfMobileData!!.toDouble()) {
                     compare = true
                     return true
                 }

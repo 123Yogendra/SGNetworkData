@@ -24,10 +24,10 @@ class NetworkDataActivityViewModel @Inject constructor() : ViewModel() {
     fun fetchDataDetail() {
 
         val networkDataAPI =
-            networkModule.provideWeatherApi(networkModule.provideRetrofitInterface())
+            networkModule.provideNetworkDataApi(networkModule.provideRetrofitInterface())
 
         val networkDataAPICall =
-            networkDataAPI.getWeatherDetail(
+            networkDataAPI.getNetworkDataList(
                 Constants.RESOURCE_ID,
                 Constants.LIMIT
             )

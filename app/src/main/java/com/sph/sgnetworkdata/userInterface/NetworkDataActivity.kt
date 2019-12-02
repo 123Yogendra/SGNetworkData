@@ -1,6 +1,7 @@
 package com.sph.sgnetworkdata.userInterface
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -22,6 +23,10 @@ class NetworkDataActivity : AppCompatActivity() {
     @Inject
     lateinit var networkDataActivityViewModel: NetworkDataActivityViewModel
 
+    @Inject
+    lateinit var networkDataAdapter: NetworkDataAdapter
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -30,7 +35,7 @@ class NetworkDataActivity : AppCompatActivity() {
         callApiAndUpdateUI()
     }
 
-    fun prepareView() {
+    private fun prepareView() {
         recycleViewNetworkData.itemAnimator = DefaultItemAnimator()
         recycleViewNetworkData.addItemDecoration(
             DividerItemDecoration(
@@ -38,6 +43,15 @@ class NetworkDataActivity : AppCompatActivity() {
                 DividerItemDecoration.VERTICAL
             )
         )
+        this.recycleViewNetworkData.adapter = networkDataAdapter
+        networkDataAdapter.onItemClick = { recordList ->
+
+            // do something with your item
+            Log.d("TAG", recordList!!.size.toString())
+            val bottomSheetFragment = NetworkDataDetailFragment(recordList)
+            bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
+        }
+
     }
 
     private fun callApiAndUpdateUI() {
@@ -47,8 +61,7 @@ class NetworkDataActivity : AppCompatActivity() {
                 networkDataProgressBar.visibility = View.GONE
 
                 if (baseDataStore != null && baseDataStore.result!!.records != null)
-                this.recycleViewNetworkData.adapter =
-                    NetworkDataAdapter(getYearNetworkData(baseDataStore.result!!.records!!))
+                    networkDataAdapter.addItemList(getYearNetworkData(baseDataStore.result!!.records!!))
             })
 
 
@@ -90,7 +103,7 @@ class NetworkDataActivity : AppCompatActivity() {
     }
 
 
-    fun showSnackBar(msg: String) {
+    private fun showSnackBar(msg: String) {
         Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_SHORT)
             .show()
     }

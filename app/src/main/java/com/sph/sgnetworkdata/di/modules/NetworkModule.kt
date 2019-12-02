@@ -45,7 +45,7 @@ class NetworkModule @Inject constructor(var application: Application) {
 
 
     @Provides
-    fun provideWeatherApi(retrofit: Retrofit): NetworkDataAPI =
+    fun provideNetworkDataApi(retrofit: Retrofit): NetworkDataAPI =
         retrofit.create(NetworkDataAPI::class.java)
 
 

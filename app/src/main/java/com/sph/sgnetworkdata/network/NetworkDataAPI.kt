@@ -13,6 +13,6 @@ interface NetworkDataAPI{
     // https://data.gov.sg/api/action/datastore_search?resource_id=a807b7ab-6cad-4aa6-87d0-e283a7353a0f&limit=5
 
     @GET("/api/action/datastore_search")
-    fun getWeatherDetail(@Query("resource_id") resourceId:String, @Query("limit")  limit : String): Call<BaseDataStore>
+    fun getNetworkDataList(@Query("resource_id") resourceId:String, @Query("limit")  limit : String): Call<BaseDataStore>
 
 }
